@@ -126,11 +126,14 @@ def getreportforstore(request,storeid):
 
     obj1count= StoreStatus.objects.filter(store_id=storeid).count()
     obj1activecount = StoreStatus.objects.filter(store_id=storeid, status="active").count()
-    puptime = obj1activecount/obj1count
+    if obj1count!=0:
+        puptime = obj1activecount/obj1count
+    else:
+        puptime = 0
   
    
     for bh in business_hours:
-        if utc_time.weekday()==int(bh.day_of_week):
+        if utc_time.weekday()==int(bh.day_of_week if bhfound else bh['day_of_week']):
   
             starttimeutc=convert_to_utc(bh.start_time_local if bhfound else bh['start_time_local'],timezone_str,utc_time.weekday())
             endtimeutc=convert_to_utc(bh.end_time_local if bhfound else bh['end_time_local'],timezone_str,utc_time.weekday())
